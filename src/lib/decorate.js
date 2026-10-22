@@ -2,10 +2,19 @@ const _titleIdFromHref = typeof module !== 'undefined'
   ? require('./extract-ids.js').titleIdFromHref
   : globalThis.IWC.titleIdFromHref;
 
-const RIBBON_SVG =
-  '<svg width="18" height="26" viewBox="0 0 18 26" aria-hidden="true">' +
-  '<polygon points="0 0 18 0 18 24 9 19 0 24" fill="#f5c518"/>' +
-  '<path d="M4.5 8.5 8 12 13.5 5.5" fill="none" stroke="#000" stroke-width="2"/></svg>';
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+const RIBBON_SVG = ['svg', { width: '18', height: '26', viewBox: '0 0 18 26', 'aria-hidden': 'true' }, [
+  ['polygon', { points: '0 0 18 0 18 24 9 19 0 24', fill: '#f5c518' }],
+  ['path', { d: 'M4.5 8.5 8 12 13.5 5.5', fill: 'none', stroke: '#000', 'stroke-width': '2' }],
+]];
+
+function svgNode(doc, [tag, attrs, children = []]) {
+  const node = doc.createElementNS(SVG_NS, tag);
+  for (const [name, value] of Object.entries(attrs)) node.setAttribute(name, value);
+  for (const child of children) node.appendChild(svgNode(doc, child));
+  return node;
+}
 
 function collectRows(root, cfg) {
   const entries = [];
@@ -26,7 +35,7 @@ function markRows(entries, watchIds, doc) {
     const mark = doc.createElement('span');
     mark.className = 'iwc-check';
     mark.title = 'On your Watchlist';
-    mark.innerHTML = RIBBON_SVG;
+    mark.appendChild(svgNode(doc, RIBBON_SVG));
     host.classList.add('iwc-host');
     host.appendChild(mark);
     added++;
