@@ -5,6 +5,11 @@
   "description": "Shows a checkmark next to films on IMDb person pages when they are on your Watchlist.",
   "permissions": ["storage", "alarms"],
   "host_permissions": ["*://*.imdb.com/*"],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
   "background": {
     "service_worker": "src/background.js",
     "scripts": [
@@ -16,7 +21,14 @@
       "src/background.js"
     ]
   },
-  "action": { "default_popup": "src/popup.html" },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
   "content_scripts": [
     {
       "matches": ["*://*.imdb.com/name/*"],
@@ -42,6 +54,9 @@
     }
   ],
   "browser_specific_settings": {
-    "gecko": { "id": "imdb-watchlist-checker@local" }
+    "gecko": {
+      "id": "imdb-watchlist-checker@rsotolongo",
+      "data_collection_permissions": { "required": ["none"] }
+    }
   }
 }
