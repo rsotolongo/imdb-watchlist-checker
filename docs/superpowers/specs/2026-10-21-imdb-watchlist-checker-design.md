@@ -35,7 +35,7 @@ Option 3 (agreed): scheduled fetch of the Watchlist export from IMDb using sessi
 - **content-name.js** (person pages) — extracts title IDs from filmography links, asks the worker which are on the Watchlist, inserts a ✓ before each matching row. A `MutationObserver` handles rows loaded later (e.g. "See all").
 - **content-title.js** (title pages) — reads ribbon state, reports it to the worker.
 - **Popup** — item count, last-synced time, "Sync now", status (OK / signed out / last sync failed).
-- **Checkmark** — small green ✓ before the title, tooltip "On your Watchlist", adapts to IMDb light/dark themes. Marked with `data-iwc` so it is inserted once per row.
+- **Checkmark** — small ribbon with ✓ over the poster, tooltip "On your Watchlist", adapts to IMDb light/dark themes. Marked with `data-iwc` so it is inserted once per row.
 
 ## Error handling
 
