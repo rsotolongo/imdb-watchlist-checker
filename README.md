@@ -1,6 +1,6 @@
 # IMDb Watchlist Checker
 
-Browser extension (Chrome, Edge, Firefox) that adds a green ✓ before each film on an IMDb person page (`/name/nm…`) when that film is on your Watchlist.
+Browser extension (Chrome, Edge, Firefox) that adds a ribbon with checkmark ✓ over each film poster on an IMDb person page (`/name/nm…`) when that film is on your Watchlist.
 
 ## Install (unpacked)
 
@@ -21,7 +21,9 @@ Stay signed in to IMDb. The extension syncs on install, every 6 hours, and from 
 
 ## Permissions and privacy
 
-`storage` and `alarms` for the cache and schedule; `*://*.imdb.com/*` to read your Watchlist and decorate pages. Nothing leaves your browser, there are no other network calls, and the extension never modifies your Watchlist.
+`storage` and `alarms` for the cache and schedule; `https://www.imdb.com/*` to read your Watchlist and decorate pages. Nothing leaves your browser, there are no other network calls, and the extension never modifies your Watchlist.
+
+Full policy: [PRIVACY.md](PRIVACY.md).
 
 ## Fragility
 

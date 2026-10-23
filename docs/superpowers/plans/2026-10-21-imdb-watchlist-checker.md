@@ -21,7 +21,7 @@
 - A sync replaces the cache only if the CSV header is present and every parsed row is a valid `tt\d+` ID; a header with zero rows is a valid empty Watchlist.
 - All storage writes go through one serialized queue.
 - Selectors and the export URL live only in `src/config.js`.
-- Checkmark: small green ✓ before the title, tooltip "On your Watchlist", marked `data-iwc`, inserted once per row, light/dark safe.
+- Checkmark: small ribbon with ✓ over the poster, tooltip "On your Watchlist", marked `data-iwc`, inserted once per row, light/dark safe.
 - The assistant never enters IMDb credentials; live checks use the user's logged-in browser.
 - The directory is not a git repo. Skip commit steps unless the user runs `git init`; if so, commit after each task.
 
