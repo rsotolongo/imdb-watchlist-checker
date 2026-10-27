@@ -2,9 +2,14 @@
   "manifest_version": 3,
   "name": "IMDb Watchlist Checker",
   "version": "0.1.0",
-  "description": "Shows a checkmark next to films on IMDb person pages when they are on your Watchlist.",
+  "description": "Shows the same ribbon with checkmark over film posters on IMDb person pages when they are on your Watchlist.",
   "permissions": ["storage", "alarms"],
-  "host_permissions": ["https://*.imdb.com/*"],
+  "host_permissions": ["https://www.imdb.com/*"],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
   "background": {
     "service_worker": "src/background.js",
     "scripts": [
@@ -17,10 +22,17 @@
       "src/background.js"
     ]
   },
-  "action": { "default_popup": "src/popup.html" },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
   "content_scripts": [
     {
-      "matches": ["https://*.imdb.com/name/*"],
+      "matches": ["https://www.imdb.com/name/*"],
       "js": [
         "src/config.js",
         "src/lib/browser.js",
@@ -32,7 +44,7 @@
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://*.imdb.com/title/*"],
+      "matches": ["https://www.imdb.com/title/*"],
       "js": [
         "src/config.js",
         "src/lib/browser.js",
@@ -43,6 +55,9 @@
     }
   ],
   "browser_specific_settings": {
-    "gecko": { "id": "imdb-watchlist-checker@local" }
+    "gecko": {
+      "id": "imdb-watchlist-checker@rsotolongo",
+      "data_collection_permissions": { "required": ["none"] }
+    }
   }
 }
