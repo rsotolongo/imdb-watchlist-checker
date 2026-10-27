@@ -76,3 +76,20 @@ test('runSync_emptyWatchlist_replacesWithEmpty', async () => {
   assert.strictEqual(await runSync(pagedFetch([[]]), store, 2), 'ok');
   assert.deepStrictEqual((await store.getState()).ids, []);
 });
+
+test('runSync_redirectedToForeignHost_failsKeepsIds', async () => {
+  const store = memoryStore();
+  await store.replaceAll(['tt9'], 1);
+  const fetchFn = async () => response('https://evil.example/watchlist/', watchlistHtml(['tt1'], false));
+  assert.strictEqual(await runSync(fetchFn, store, 2), 'failed');
+  assert.deepStrictEqual((await store.getState()).ids, ['tt9']);
+});
+
+test('runSync_laterPageOnForeignHost_failsKeepsIds', async () => {
+  const store = memoryStore();
+  await store.replaceAll(['tt9'], 1);
+  const fetchFn = async (url) =>
+    url.includes('page=2') ? response('http://www.imdb.com/x', watchlistHtml(['tt2'], false)) : response(BASE, watchlistHtml(['tt1'], true));
+  assert.strictEqual(await runSync(fetchFn, store, 2), 'failed');
+  assert.deepStrictEqual((await store.getState()).ids, ['tt9']);
+});

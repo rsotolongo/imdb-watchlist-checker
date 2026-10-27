@@ -4,6 +4,11 @@ const _deps = typeof module !== 'undefined'
   ? { config: require('../config.js'), parseWatchlistPage: require('./parse-watchlist.js').parseWatchlistPage }
   : { config: globalThis.IWC.config, parseWatchlistPage: globalThis.IWC.parseWatchlistPage };
 
+const assertImdbUrl = (url) => {
+  const { protocol, hostname } = new URL(url);
+  if (protocol !== 'https:' || hostname !== 'www.imdb.com') throw new Error('unexpected origin');
+};
+
 const isSignInUrl = (url) => /\/(ap\/signin|registration\/signin|signin)/i.test(url);
 
 async function runSync(fetchFn, store, now) {
@@ -14,6 +19,7 @@ async function runSync(fetchFn, store, now) {
       await store.recordError('signed-out', now);
       return 'signed-out';
     }
+    assertImdbUrl(first.url);
     const base = first.url.split('?')[0];
     const ids = [];
     let page = parseWatchlistPage(first.ok ? await first.text() : '');
@@ -22,6 +28,7 @@ async function runSync(fetchFn, store, now) {
       ids.push(...page.ids);
       if (!page.hasNext || n > MAX_PAGES) break;
       const next = await fetchFn(`${base}?page=${n}`, { credentials: 'include' });
+      assertImdbUrl(next.url);
       page = parseWatchlistPage(next.ok ? await next.text() : '');
     }
     await store.replaceAll(ids, now);

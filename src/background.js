@@ -1,9 +1,9 @@
 if (typeof importScripts === 'function') {
-  importScripts('config.js', 'lib/browser.js', 'lib/parse-watchlist.js', 'lib/store.js', 'lib/sync.js');
+  importScripts('config.js', 'lib/browser.js', 'lib/parse-watchlist.js', 'lib/store.js', 'lib/sync.js', 'lib/validate-message.js');
 }
 
 (() => {
-  const { api, config, createStore, runSync } = globalThis.IWC;
+  const { api, config, createStore, runSync, validateMessage } = globalThis.IWC;
   const store = createStore(api.storage.local);
   const SYNC_ALARM = 'iwc-sync';
 
@@ -25,10 +25,11 @@ if (typeof importScripts === 'function') {
     state: () => store.getState(),
   };
 
-  api.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-    const handler = handlers[msg?.type];
-    if (!handler) return false;
-    Promise.resolve(handler(msg)).then(sendResponse);
+  api.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (sender.id !== api.runtime.id || !validateMessage(msg)) return false;
+    Promise.resolve()
+      .then(() => handlers[msg.type](msg))
+      .then(sendResponse, () => sendResponse(null));
     return true;
   });
 })();
