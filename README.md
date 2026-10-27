@@ -1,6 +1,6 @@
 # IMDb Watchlist Checker
 
-Browser extension (Chrome, Edge, Firefox) that adds a green ✓ before each film on an IMDb person page (`/name/nm…`) when that film is on your Watchlist.
+Browser extension (Chrome, Edge, Firefox) that adds a ribbon with checkmark ✓ over each film poster on an IMDb person page (`/name/nm…`) when that film is on your Watchlist.
 
 ## Install (unpacked)
 
@@ -21,7 +21,9 @@ Stay signed in to IMDb. The extension syncs on install, every 6 hours, and from 
 
 ## Permissions and privacy
 
-`storage` and `alarms` for the cache and schedule; `*://*.imdb.com/*` to read your Watchlist and decorate pages. Nothing leaves your browser, there are no other network calls, and the extension never modifies your Watchlist.
+`storage` and `alarms` for the cache and schedule; `https://www.imdb.com/*` to read your Watchlist and decorate pages. Nothing leaves your browser, there are no other network calls, and the extension never modifies your Watchlist.
+
+Full policy: [PRIVACY.md](PRIVACY.md).
 
 ## Fragility
 
@@ -30,5 +32,39 @@ This relies on IMDb's page markup and embedded page data, which are not a public
 ## Development
 
 ```
-npm test
+npm test         # unit tests
+npm run package  # dist/chrome.zip (Chrome, Edge) and dist/firefox.zip
+npm run lint     # package, then run Mozilla's validator on the Firefox build
 ```
+
+## Merging and releasing
+
+Work on a branch and merge to `main` through a pull request:
+
+```
+git switch -c my-change
+# commit, then
+git push -u origin my-change
+gh pr create --fill
+```
+
+Before merging, run `npm test` and `npm run lint` and check the change in a browser (see [docs/manual-test-checklist.md](docs/manual-test-checklist.md)). Squash-merge, then update your local `main`:
+
+```
+gh pr merge --squash --delete-branch
+git switch main && git pull
+```
+
+Merging does not publish anything. To release what is on `main`:
+
+1. Bump `version` in `manifest.json` (semver; every store rejects a version it has already received), commit and merge it like any other change.
+2. Tag the merged commit with the same version and push the tag:
+   ```
+   git switch main && git pull
+   git tag v0.2.0
+   git push origin v0.2.0
+   ```
+3. The **Release** workflow (Actions tab) tests, packages, creates a GitHub Release with both zips, and submits to the Chrome Web Store, Microsoft Edge Add-ons and Firefox Add-ons. It fails if the tag and manifest version differ.
+4. Each store reviews the submission (hours to days). If a store job fails, fix the cause and use *Re-run failed jobs*; a store that already accepted the version will reject a second upload of it.
+
+Store accounts, API keys and the repository secrets the workflow needs are covered in [docs/publishing.md](docs/publishing.md).

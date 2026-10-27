@@ -26,7 +26,13 @@ function fakeRow(href, { marked = false, poster = true } = {}) {
   };
 }
 
-const fakeDoc = { createElement: () => ({}) };
+function fakeNode(tag) {
+  const attrs = {};
+  const children = [];
+  return { tag, attrs, children, setAttribute: (n, v) => { attrs[n] = v; }, appendChild: (c) => children.push(c) };
+}
+
+const fakeDoc = { createElement: (tag) => fakeNode(tag), createElementNS: (_ns, tag) => fakeNode(tag) };
 const fakeRoot = (rows) => ({ querySelectorAll: () => rows });
 
 test('collectRows_skipsRowsWithDataIwc', () => {
@@ -45,6 +51,15 @@ test('markRows_rowWithPoster_addsRibbonToPoster', () => {
   assert.strictEqual(row.posterHost.children[0].title, 'On your Watchlist');
   assert.ok(row.posterHost.classes.has('iwc-host'));
   assert.strictEqual(row.rowHost.children.length, 0);
+});
+
+test('markRows_watchlisted_ribbonIsSvgWithShapes', () => {
+  const row = fakeRow('/title/tt1/');
+  markRows(collectRows(fakeRoot([row]), cfg), new Set(['tt1']), fakeDoc);
+  const [svg] = row.posterHost.children[0].children;
+  assert.strictEqual(svg.tag, 'svg');
+  assert.strictEqual(svg.attrs['aria-hidden'], 'true');
+  assert.deepStrictEqual(svg.children.map((c) => c.tag), ['polygon', 'path']);
 });
 
 test('markRows_rowWithoutPoster_addsRibbonToRow', () => {

@@ -11,5 +11,5 @@ test('config_loaded_hasSixHourSyncInterval', () => {
 test('manifest_permissions_areMinimal', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '../manifest.json'), 'utf8'));
   assert.deepStrictEqual(manifest.permissions, ['storage', 'alarms']);
-  assert.deepStrictEqual(manifest.host_permissions, ['https://*.imdb.com/*']);
+  assert.deepStrictEqual(manifest.host_permissions, ['https://www.imdb.com/*']);
 });
