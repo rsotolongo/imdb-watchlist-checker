@@ -1,5 +1,6 @@
 dist/
 node_modules/
-docs/superpowers/
+.cluade/
 .remember/
-.vs
+.vs/
+docs/superpowers/
